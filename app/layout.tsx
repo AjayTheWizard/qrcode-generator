@@ -32,9 +32,11 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={inter.className}>
-          <div className="dark bg-background text-foreground min-h-screen w-full">
+          <div id='body' className="dark bg-background text-foreground min-h-screen w-full">
             {children}
           </div>
+          <script>
+          </script>
         </body>
       </html>
     </ClerkProvider>
