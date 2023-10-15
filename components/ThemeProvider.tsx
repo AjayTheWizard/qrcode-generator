@@ -1,15 +1,15 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react'
-import type { FC, ReactNode } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 
 type Theme = 'dark' | 'light'
 
 const themeContext = createContext<
-  null | [Theme, (value: Theme | ((prevState: Theme) => Theme)) => void]
+  null | [Theme | null, (value: (Theme | null) | ((prevState: (Theme | null)) => Theme)) => void]
 >(null)
 
-export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('light')
+export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [theme, setTheme] = useState<Theme | null>(null)
   function setMode(theme: Theme) {
     window.localStorage.setItem('theme', theme)
     setTheme(theme)
@@ -23,10 +23,10 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }
   useEffect(() => {
     if (window !== undefined) {
-      let cls = document.getElementById('body') as HTMLDivElement
       let themeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
       if (window.localStorage.getItem('theme')) {
         if (window.localStorage.getItem('theme') === 'dark') {
+          console.log("set to dark")
           setMode('dark')
         } else {
           setMode('light')
@@ -44,7 +44,9 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [])
   useEffect(() => {
-    setMode(theme)
+    if(theme){
+      setMode(theme)
+    }
   }, [theme])
   return (
     <themeContext.Provider value={[theme, setTheme]}>

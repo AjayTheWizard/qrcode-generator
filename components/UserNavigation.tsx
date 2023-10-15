@@ -28,18 +28,18 @@ export const UserNavigation = () => {
               <Link href="/sign-up">Sign Up</Link>
             </Button>
           </li>
-          <li>
-            <Button
-              size="icon"
-              onClick={() => {
-                setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
-              }}
-            >
-              {theme == 'dark' ? <BsFillMoonStarsFill /> : <BsFillSunFill />}
-            </Button>
-          </li>
         </>
       )}
+      <li>
+        <Button
+          size="icon"
+          onClick={() => {
+            setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+          }}
+        >
+          {theme == 'dark' ? <BsFillMoonStarsFill /> : <BsFillSunFill />}
+        </Button>
+      </li>
     </ul>
   )
 }
