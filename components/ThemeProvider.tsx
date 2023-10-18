@@ -1,53 +1,52 @@
 'use client'
+
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { FC, PropsWithChildren } from 'react'
 
 type Theme = 'dark' | 'light'
 
-const themeContext = createContext<
-  null | [Theme | null, (value: (Theme | null) | ((prevState: (Theme | null)) => Theme)) => void]
->(null)
+type ThemeContext = [
+  Theme | null,
+  (value: Theme | ((prevState: Theme | null) => Theme) | null) => void,
+]
+
+const themeContext = createContext<ThemeContext | null>(null)
 
 export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const [theme, setTheme] = useState<Theme | null>(null)
+
   function setMode(theme: Theme) {
     window.localStorage.setItem('theme', theme)
     setTheme(theme)
   }
-  function onThemeChange(ev: MediaQueryListEvent) {
-    if (ev.matches) {
-      setMode('dark')
-    } else {
-      setMode('light')
-    }
-  }
-  useEffect(() => {
-    if (window !== undefined) {
-      let themeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-      if (window.localStorage.getItem('theme')) {
-        if (window.localStorage.getItem('theme') === 'dark') {
-          console.log("set to dark")
-          setMode('dark')
-        } else {
-          setMode('light')
-        }
-      } else {
-        if (themeMediaQuery.matches) {
-          setMode('dark')
-        } else {
-          setMode('light')
-        }
-      }
-      themeMediaQuery.onchange = onThemeChange
-    }else{
 
-    }
-  }, [])
+  function onThemeChange(e: MediaQueryListEvent) {
+    setMode(e.matches ? 'dark' : 'light')
+  }
+
   useEffect(() => {
-    if(theme){
+    let themeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const storedTheme = window.localStorage.getItem('theme')
+
+    // If the user has set a theme before, we want to use that
+    if (storedTheme) {
+      setMode(storedTheme === 'dark' ? 'dark' : 'light')
+    }
+
+    // If the user has never set a theme before, we want to set it to dark mode
+    else {
+      setMode(themeMediaQuery.matches ? 'dark' : 'light')
+    }
+
+    themeMediaQuery.onchange = onThemeChange
+  }, [])
+
+  useEffect(() => {
+    if (theme) {
       setMode(theme)
     }
   }, [theme])
+
   return (
     <themeContext.Provider value={[theme, setTheme]}>
       {children}
@@ -57,8 +56,10 @@ export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
 
 export const useTheme = () => {
   let context = useContext(themeContext)
+
   if (!context) {
     throw new Error("Must be used within 'ThemeProvider'")
   }
+
   return context
 }

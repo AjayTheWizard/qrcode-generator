@@ -1,17 +1,30 @@
 'use client'
 
-import { useUser } from '@clerk/nextjs'
-import { Button } from '@components/ui/button'
 import Link from 'next/link'
-import { UserButton } from '@clerk/nextjs'
-import { BsFillMoonStarsFill, BsFillSunFill } from 'react-icons/bs'
+
+import { useUser } from '@clerk/nextjs'
 import { useTheme } from './ThemeProvider'
+import { UserButton } from '@clerk/nextjs'
+import { Button } from '@components/ui/button'
+import { BsFillMoonStarsFill, BsFillSunFill } from 'react-icons/bs'
 
 export const UserNavigation = () => {
   const { isSignedIn } = useUser()
   const [theme, setTheme] = useTheme()
+
   return (
     <ul className="flex gap-3 items-center">
+      <li>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => {
+            setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+          }}
+        >
+          {theme == 'dark' ? <BsFillMoonStarsFill /> : <BsFillSunFill />}
+        </Button>
+      </li>
       {isSignedIn ? (
         <li>
           <UserButton afterSignOutUrl="/" />
@@ -30,16 +43,6 @@ export const UserNavigation = () => {
           </li>
         </>
       )}
-      <li>
-        <Button
-          size="icon"
-          onClick={() => {
-            setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
-          }}
-        >
-          {theme == 'dark' ? <BsFillMoonStarsFill /> : <BsFillSunFill />}
-        </Button>
-      </li>
     </ul>
   )
 }

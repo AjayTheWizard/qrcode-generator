@@ -1,10 +1,9 @@
 // Styles
 import '@styles/globals.css'
 
-import type { FunctionComponent, PropsWithChildren } from 'react'
-
-// Next imports
+// React/Next imports
 import type { Metadata } from 'next'
+import type { PropsWithChildren } from 'react'
 import { Inter } from 'next/font/google'
 
 // Clerk imports
@@ -14,6 +13,8 @@ import { dark } from '@clerk/themes'
 // Constants
 import { DESCRIPTION, HOME_PAGE_TITLE } from '@constants'
 import { ThemeProvider } from '@components/ThemeProvider'
+
+// Components
 import MainWrapper from '@components/MainWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -23,14 +24,12 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
 }
 
-export default function RootLayout({ children }: React.PropsWithChildren) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <RootProvider>
       <html lang="en">
         <body className={inter.className}>
-          <MainWrapper>
-            {children}
-          </MainWrapper>
+          <MainWrapper>{children}</MainWrapper>
         </body>
       </html>
     </RootProvider>
